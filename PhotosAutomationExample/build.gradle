@@ -1,0 +1,109 @@
+apply plugin: "java"
+apply plugin: "eclipse"
+apply plugin: "idea"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+}
+
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+ext {
+    libs = [
+        java_utils: files("libs/co/com/java/utils/1.0.0/java-utils-1.0.0/java-utils-1.0.0.jar"),
+        test      : [
+            cucumber    : [
+                core : "io.cucumber:cucumber-core:${cucumber_version}",
+                java : "io.cucumber:cucumber-java:${cucumber_version}",
+                junit: "io.cucumber:cucumber-junit:${cucumber_version}"
+            ],
+            serenity    : [
+                core                : "net.serenity-bdd:serenity-core:${serenity_version}",
+                screenplay          : "net.serenity-bdd:serenity-screenplay:${serenity_version}",
+                screenplay_webdriver: "net.serenity-bdd:serenity-screenplay-webdriver:${serenity_version}",
+                screenplay_rest     : "net.serenity-bdd:serenity-screenplay-rest:${serenity_version}",
+                rest_assured        : "net.serenity-bdd:serenity-rest-assured:${serenity_version}",
+                cucumber            : "net.serenity-bdd:serenity-cucumber5:${serenity_cucumber_version}",
+                junit               : "net.serenity-bdd:serenity-junit:${serenity_version}"
+            ],
+            assertj     : "org.assertj:assertj-core:${assertj_version}",
+            junit       : "org.junit.jupiter:junit-jupiter-api:${junit_version}",
+            hamcrest    : "org.hamcrest:hamcrest-all:${hamcrest_version}"
+        ],
+        others    : [
+            logger   : [
+                slf4j  : "org.slf4j:slf4j-api:${slf4j_version}",
+                logback: "ch.qos.logback:logback-classic:${logback_version}"
+            ],
+            json_path: "com.jayway.jsonpath:json-path:${json_path_version}"
+        ]
+    ]
+}
+
+dependencies {
+    compile libs.java_utils,
+        libs.test.serenity.core,
+        libs.test.serenity.screenplay_webdriver,
+        libs.test.serenity.screenplay_rest,
+        libs.test.serenity.rest_assured,
+        libs.test.serenity.cucumber,
+        libs.test.serenity.junit,
+        libs.others.logger.slf4j,
+        libs.others.logger.logback,
+        libs.others.json_path
+
+    testCompile libs.test.cucumber.core,
+        libs.test.cucumber.java,
+        libs.test.cucumber.junit,
+        libs.test.assertj,
+        libs.test.junit,
+        libs.test.hamcrest
+}
+
+configurations.all {
+    resolutionStrategy
+        {
+            force libs.test.cucumber.core
+        }
+}
+
+test {
+    filter {
+    
+    include 'co/com/aut/example/photos/runners/FeatureRunner.class'
+
+
+    }
+
+    testLogging.showStandardStreams = true
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+    }
+}
+// Serenity configurations ***************************************************************************************************
+
+apply plugin: "net.serenity-bdd.aggregator"
+defaultTasks "clean", "test", "aggregate"
+
+buildscript {
+    repositories
+        {
+            mavenCentral()
+            mavenLocal()
+            jcenter()
+        }
+    dependencies
+        {
+            classpath("net.serenity-bdd:serenity-gradle-plugin:2.2.9")
+        }
+}
+
+gradle.startParameter.continueOnFailure = true
+
+test.finalizedBy(aggregate)
