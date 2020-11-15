@@ -7,6 +7,7 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import net.serenitybdd.core.environment.EnvironmentSpecificConfiguration;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.rest.abilities.CallAnApi;
 import net.thucydides.core.util.EnvironmentVariables;
@@ -29,7 +30,13 @@ public class PhotoSteps {
 
 	@Before
 	public void setupScenario() {
+		System.out.println("********************setupScenarioStepsPrueba Hook PhotoSteps1 Before*********************");
 		theRestApiBaseUrl = environmentVariables.getProperty("restapi.baseurl");
+		theRestApiBaseUrl = EnvironmentSpecificConfiguration.from(environmentVariables).getProperty("my.webservice.endpoint22");
+		System.out.println("JAG20201113Spec"+theRestApiBaseUrl);
+		//ACTOR.can(AutenticarseAbility.como("PRUEBA"));	
+		//System.out.println("JAG20201113Ability"+AutenticarseAbility.as(ACTOR).nombre());
+		//ACTOR.should(seeThat(elUsuarioEs(), equalTo("valor")));
 		ACTOR.whoCan(CallAnApi.at(theRestApiBaseUrl)); 
 	}
 

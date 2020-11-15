@@ -7,6 +7,6 @@ import io.cucumber.junit.CucumberOptions;
 
 @RunWith(CucumberWithSerenity.class)
 @CucumberOptions(
-    features = {"src/test/resources/features/obtener_photo.feature"},
-    glue = {"co.com.aut.example.photos.steps"})
+    features = {"src/test/resources/features"},
+    glue = {"co.com.aut.example.photos"})
 public class FeatureRunner {}

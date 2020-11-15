@@ -1,3 +1,4 @@
+@obtenerPhoto
 Feature: obtener información de una foto
 
   Scenario: Verificar la información de una fotograf�a
